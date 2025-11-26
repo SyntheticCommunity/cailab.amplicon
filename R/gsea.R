@@ -18,9 +18,7 @@
 #' @importFrom fgsea fgsea
 #' @importFrom dplyr arrange desc select
 #' @importFrom tibble as_tibble
-#' @importFrom DOSE gseaResult
-#' @importFrom enrichplot gseaplot2
-#' @importFrom methods new
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -68,7 +66,7 @@ run_microbiome_gsea <- function(ps, target_taxon, tax_rank, sample_feat,
   # 转换为 tibble 并按 NES (Normalized Enrichment Score) 绝对值或数值排序
   # 这里按 NES 降序排列 (正富集在前，负富集在后)
   gsea_res <- gsea_res %>% 
-      dplyr::arrange(dplyr::desc(NES)) %>% 
+      dplyr::arrange(dplyr::desc(.data$NES)) %>% 
       tibble::as_tibble()
   
   # 5. 添加属性以便后续绘图
@@ -94,16 +92,17 @@ run_microbiome_gsea <- function(ps, target_taxon, tax_rank, sample_feat,
 #' @importFrom ggplot2 labs
 #' @export
 #' @examples
-#' # example code
+#' \dontrun{
 #' gsea_res = run_microbiome_gsea(ps_test_data, "Genus1", "Genus", c("Group","Source"))
 #' gsea_plot(gsea_res, "Group_Treat")
+#' }
 gsea_plot = function(gsea_res, set_name){
   sample_sets = attr(gsea_res, "sampleSets")
   sample_ranks = attr(gsea_res, "sampleRanks")
 
   p_val <- gsea_res$padj[gsea_res$pathway == set_name]
   p_val_fmt <- format(p_val, scientific = TRUE, digits = 3)
-  NES = format(gsea_res$NES[gsea_res$pathway == set_name], digits = 3)
+  NES <- format(gsea_res[gsea_res$pathway == set_name, "NES"], digits = 3)
   
   lab = paste0(set_name, " (p.adj = ", p_val_fmt, ", NES = ", NES, ")")
   
@@ -126,6 +125,7 @@ gsea_plot = function(gsea_res, set_name){
 #'
 #' @importFrom dplyr filter
 #' @importFrom cowplot plot_grid
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' \dontrun{
@@ -142,65 +142,4 @@ gsea_plot_all = function(gsea_res, filter = TRUE, ...){
   }
   gglist = lapply(sets, gsea_plot, gsea_res = gsea_res)
   cowplot::plot_grid(plotlist = gglist, ...)
-}
-
-#' Convert GSEA result to gseaResult object
-#' 
-#' Convert the data frame returned by `run_microbiome_gsea` to a `gseaResult` object
-#' for visualization with `enrichplot`.
-#' 
-#' @param gsea_df The data frame returned by `run_microbiome_gsea`.
-#' 
-#' @return A `gseaResult` object.
-#' @export
-as_gseaResult <- function(gsea_df) {
-    if (!inherits(gsea_df, "data.frame")) {
-        stop("Input must be a data frame.")
-    }
-    
-    geneSets <- attr(gsea_df, "sampleSets")
-    geneList <- attr(gsea_df, "sampleRanks")
-    
-    if (is.null(geneSets) || is.null(geneList)) {
-        stop("Input data frame is missing 'geneSets' or 'geneList' attributes.")
-    }
-    
-  gsea_df$Description = ""
-    # Construct gseaResult object manually
-    # This structure mimics the object returned by DOSE/clusterProfiler
-    res <- methods::new("gseaResult",
-               result     = gsea_df,
-               geneSets   = geneSets,
-               geneList   = geneList,
-               params     = list(pvalueCutoff = 1, # Placeholder
-                                 nPerm = 1000,     # Placeholder
-                                 minGSSize = 5,    # Placeholder
-                                 maxGSSize = 500,  # Placeholder
-                                 exponent = 1),
-               readable   = FALSE
-    )
-    
-    return(res)
-}
-
-#' Visualize GSEA results using enrichplot
-#' 
-#' This function converts the GSEA result to a `gseaResult` object and plots it
-#' using `enrichplot::gseaplot2`.
-#' 
-#' @param gsea_res The result from `run_microbiome_gsea`.
-#' @param geneSetID The ID of the gene set (pathway) to plot. Can be numeric (index) or character (name).
-#' @param title Plot title.
-#' @param ... Additional arguments passed to `enrichplot::gseaplot2`.
-#' 
-#' @return A ggplot object.
-#' @export
-plot_gsea <- function(gsea_res, geneSetID, title = "", ...) {
-    # Convert to gseaResult object
-    gsea_obj <- as_gseaResult(gsea_res)
-    
-    # Plot
-    p <- enrichplot::gseaplot2(gsea_obj, geneSetID = geneSetID, title = title, ...)
-    
-    return(p)
 }

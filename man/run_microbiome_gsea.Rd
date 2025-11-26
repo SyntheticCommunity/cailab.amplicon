@@ -41,10 +41,10 @@ Columns include: pathway, pval, padj, NES, size, leadingEdge.
 \dontrun{
 # Suppose there is a ps object.
 res <- run_microbiome_gsea(
-    ps = ps,
-    target_taxon = "Bacillus",
+    ps = ps_test_data,
+    target_taxon = "Genus1",
     tax_rank = "Genus",
-    sample_feat = "SampleType"
+    sample_feat = c("Group", "Source")
 )
 print(res)
 }

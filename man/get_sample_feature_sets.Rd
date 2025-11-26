@@ -4,19 +4,17 @@
 \alias{get_sample_feature_sets}
 \title{获取样本特征集合列表}
 \usage{
-get_sample_feature_sets(ps, sample_feat, min_size = 3)
+get_sample_feature_sets(ps, cols)
 }
 \arguments{
 \item{ps}{A \code{phyloseq} object.}
 
-\item{sample_feat}{A character string. The column name in sample_data to use for grouping.}
-
-\item{min_size}{Integer. Minimum number of samples required in a group to be included. Default is 3.}
+\item{cols}{A character vector. The column name(s) in sample_data to use for grouping.}
 }
 \value{
 A list of character vectors. Each element is a vector of sample IDs belonging to a metadata group.
 }
 \description{
-将样本元数据（Metadata）中的某一列转换为样本 ID 的列表（List of Sets），
+将样本元数据（Metadata）中的一列或多列转换为样本 ID 的列表（List of Sets），
 用于 GSEA 分析中的 "Pathways"。
 }
