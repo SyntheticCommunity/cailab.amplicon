@@ -102,7 +102,7 @@ gsea_plot = function(gsea_res, set_name){
 
   p_val <- gsea_res$padj[gsea_res$pathway == set_name]
   p_val_fmt <- format(p_val, scientific = TRUE, digits = 3)
-  NES <- format(gsea_res[gsea_res$pathway == set_name, "NES"], digits = 3)
+  NES <- format(gsea_res[["NES"]][gsea_res$pathway == set_name], digits = 3)
   
   lab = paste0(set_name, " (p.adj = ", p_val_fmt, ", NES = ", NES, ")")
   
