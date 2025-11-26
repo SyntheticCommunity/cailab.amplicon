@@ -6,10 +6,9 @@
 \usage{
 run_microbiome_gsea(
   ps,
-  target_taxon,
-  tax_rank,
+  taxon_target,
+  taxon_rank,
   sample_feat,
-  nperm = 1000,
   min_size = 5,
   max_size = 500
 )
@@ -17,13 +16,11 @@ run_microbiome_gsea(
 \arguments{
 \item{ps}{A \code{phyloseq} object.}
 
-\item{target_taxon}{A character string. The target taxon name (e.g., "Escherichia").}
+\item{taxon_target}{A character string. The target taxon name (e.g., "Escherichia").}
 
-\item{tax_rank}{A character string. The rank of the target taxon (e.g., "Genus").}
+\item{taxon_rank}{A character string. The rank of the target taxon (e.g., "Genus").}
 
 \item{sample_feat}{A character string. The metadata column name to group samples (e.g., "Group").}
-
-\item{nperm}{Integer. Number of permutations for fgsea. Default is 1000.}
 
 \item{min_size}{Integer. Minimum size of a feature set. Default is 5.}
 
@@ -42,8 +39,8 @@ Columns include: pathway, pval, padj, NES, size, leadingEdge.
 # Suppose there is a ps object.
 res <- run_microbiome_gsea(
     ps = ps_test_data,
-    target_taxon = "Genus1",
-    tax_rank = "Genus",
+    taxon_target = "Genus1",
+    taxon_rank = "Genus",
     sample_feat = c("Group", "Source")
 )
 print(res)

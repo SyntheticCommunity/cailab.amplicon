@@ -3,11 +3,9 @@ test_that("GSEA analysis runs correctly on test data", {
   # 直接使用 ps_test_data
   res <- run_microbiome_gsea(
     ps = ps_test_data,
-    target_taxon = "Genus1",
-    tax_rank = "Genus",
-    sample_feat = "Group",
-    nperm = 1000,
-    min_size = 5
+    taxon_target = "Genus1",
+    taxon_rank = "Genus",
+    sample_feat = "Group"
   )
   
   # 检查结果结构

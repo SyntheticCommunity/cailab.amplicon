@@ -4,10 +4,9 @@
 #' 该微生物高丰度或低丰度的样本中富集。
 #'
 #' @param ps A `phyloseq` object.
-#' @param target_taxon A character string. The target taxon name (e.g., "Escherichia").
-#' @param tax_rank A character string. The rank of the target taxon (e.g., "Genus").
+#' @param taxon_target A character string. The target taxon name (e.g., "Escherichia").
+#' @param taxon_rank A character string. The rank of the target taxon (e.g., "Genus").
 #' @param sample_feat A character string. The metadata column name to group samples (e.g., "Group").
-#' @param nperm Integer. Number of permutations for fgsea. Default is 1000.
 #' @param min_size Integer. Minimum size of a feature set. Default is 5.
 #' @param max_size Integer. Maximum size of a feature set. Default is 500.
 #'
@@ -25,20 +24,20 @@
 #' # Suppose there is a ps object.
 #' res <- run_microbiome_gsea(
 #'     ps = ps_test_data,
-#'     target_taxon = "Genus1",
-#'     tax_rank = "Genus",
+#'     taxon_target = "Genus1",
+#'     taxon_rank = "Genus",
 #'     sample_feat = c("Group", "Source")
 #' )
 #' print(res)
 #' }
 #' @export
-run_microbiome_gsea <- function(ps, target_taxon, tax_rank, sample_feat, 
-                                nperm = 1000, min_size = 5, max_size = 500) {
+run_microbiome_gsea <- function(ps, taxon_target, taxon_rank, sample_feat, 
+                                min_size = 5, max_size = 500) {
   
   # 1. 获取排序后的丰度向量 (Stats)
   # 这一步包含了 Z-score 标准化
-  message(paste("Calculating ranked abundance for:", target_taxon, "..."))
-  sample_ranks <- get_sorted_abundance_vector(ps, target_taxon, tax_rank)
+  message(paste("Calculating ranked abundance for:", taxon_target, "..."))
+  sample_ranks <- get_sorted_abundance_vector(ps, taxon_target, taxon_rank)
   
   # 2. 获取样本特征集合 (Sets)
   message(paste("Generating sample sets for feature:", sample_feat, "..."))
